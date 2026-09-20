@@ -1,0 +1,84 @@
+---
+interface Props {
+  type: 'article' | 'person' | 'website';
+  title?: string;
+  description?: string;
+  publishedAt?: Date;
+  tags?: string[];
+  image?: string;
+}
+
+const {
+  type,
+  title,
+  description,
+  publishedAt,
+  tags,
+  image = '/apple-touch-icon.png'
+} = Astro.props;
+
+const siteUrl = Astro.site!.origin;
+const imageUrl = new URL(image, siteUrl).href;
+const currentUrl = new URL(Astro.url.pathname, siteUrl).href;
+
+const personId = `${siteUrl}/#person`;
+const websiteId = `${siteUrl}/#website`;
+
+const person = {
+  '@type': 'Person',
+  '@id': personId,
+  name: 'Rayane Kadi',
+  url: siteUrl,
+  jobTitle: 'Cloud & DevOps Engineer',
+  description: 'Self-taught Cloud and DevOps Engineer focused on secure, scalable infrastructure and end-to-end application delivery.',
+  sameAs: ['https://github.com/eenayar'],
+  knowsAbout: [
+    'Cloud Computing',
+    'DevOps',
+    'Kubernetes',
+    'AWS',
+    'Terraform',
+    'CI/CD',
+    'Infrastructure as Code',
+    'Site Reliability Engineering'
+  ]
+};
+
+const website = {
+  '@type': 'WebSite',
+  '@id': websiteId,
+  url: siteUrl,
+  name: 'Rayane Kadi',
+  description: 'Archived projects and technical articles by Rayane Kadi',
+  publisher: { '@id': personId }
+};
+
+const graph: any[] = [person, website];
+
+if (type === 'article' && title && description && publishedAt) {
+  graph.push({
+    '@type': 'BlogPosting',
+    '@id': `${currentUrl}#article`,
+    isPartOf: { '@id': websiteId },
+    headline: title,
+    description: description,
+    image: imageUrl,
+    datePublished: publishedAt.toISOString(),
+    dateModified: publishedAt.toISOString(),
+    author: { '@id': personId },
+    publisher: { '@id': personId },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': currentUrl
+    },
+    keywords: tags?.join(', ') || ''
+  });
+}
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': graph
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

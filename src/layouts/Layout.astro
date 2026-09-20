@@ -1,0 +1,46 @@
+---
+import { ClientRouter } from "astro:transitions";
+import "@fontsource-variable/inter";
+import "../styles/global.css";
+import SEO from "../components/SEO.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  publishedAt?: Date;
+  tags?: string[];
+}
+
+const {
+  title = "Rayane Kadi – Cloud & DevOps Archive",
+  description = "An archive of my Cloud and DevOps projects and technical articles, documenting hands-on work with infrastructure, automation, and application delivery.",
+  image,
+  type = 'website',
+  publishedAt,
+  tags
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<SEO
+			title={title}
+			description={description}
+			image={image}
+			type={type}
+			publishedAt={publishedAt}
+			tags={tags}
+		/>
+		<slot name="head" />
+		<ClientRouter />
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>

@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import BlogHero from '../../components/BlogHero.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import Footer from '../../components/Footer.astro';
+
+// Get all blog posts
+const allPosts = await getCollection('blog');
+
+// Filter out drafts and sort by date (newest first)
+const posts = allPosts
+  .filter(post => !post.data.draft)
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+
+<Layout
+  title="Blog - Rayane Kadi"
+  description="Archived technical articles about cloud, DevOps, CI/CD, and full-stack development. Tutorials and hands-on experience with Kubernetes, GitLab CI, Docker, and more."
+>
+  <BlogHero />
+
+  <section id="blog-list">
+    <div id="inner_section">
+      <ul>
+        {posts.map((post, index) => (
+          <li  class="blog_item animate">
+            <BlogCard
+              title={post.data.title}
+              description={post.data.description || ''}
+              tags={post.data.tags}
+              slug={post.id.replace('/index', '')}
+              coverImage={post.data.coverImage}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  #blog-list {
+    background-color: var(--bg-third-section);
+    background: var(--gradient-third-section);
+  }
+
+  #inner_section {
+    padding: 0 0 clamp(40px, 6vw, 80px);
+  }
+
+  ul {
+    border-top: 1px solid hsl(0 0% 15% / 1);
+    border-bottom: 1px solid hsl(0 0% 15% / 1);
+    box-shadow: 0px 0px 10px 0px hsl(0 0% 4% / 1);
+  }
+
+  ul:hover {
+    box-shadow: 0px 0px 10px 0px hsl(0 0% 8% / 1);
+    transition: all 0.3s ease-out;
+  }
+
+  li {
+    cursor: pointer;
+    border-top: 1px solid hsl(0 0% 15% / 1);
+    background: hsl(0 0% 4% / 1);
+    box-shadow: inset 0px 0px 10px 0px hsla(0, 0%, 8%, 0);
+    transition: all 0.4s ease-out;
+
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out;
+    animation-fill-mode: forwards;
+    animation-delay: calc(0.2s * (var(--item-position) - 1));
+  }
+
+  li:first-child {
+    border-top: none;
+  }
+
+  li:last-child {
+    border-bottom: none;
+  }
+
+  li:hover {
+    background: hsl(0 0% 6% / 1);
+    box-shadow: inset 0px 0px 10px 0px hsl(0 0% 8% / 1);
+  }
+</style>

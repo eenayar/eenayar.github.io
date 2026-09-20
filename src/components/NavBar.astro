@@ -1,0 +1,66 @@
+---
+
+---
+
+<nav>
+    <div class="nav-content animate">
+        <a href="/" class="logo button" aria-label="Home"></a>
+        <ul>
+            <li>
+                <a target="_blank" href="https://github.com/eenayar">GitHub</a>
+            </li>
+            <li>
+                <a href="/blog/">Blog</a>
+            </li>
+            <li>
+                <a href="/#contact">Contact</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<style>
+    nav {
+        position: absolute;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: fit-content;
+
+        display: flex;
+        justify-content: center;
+        background: transparent;
+    }
+
+    .nav-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        width: 100%;
+        padding: 24px 50px;
+    }
+
+    .logo {
+        width: 15px;
+        height: 15px;
+        border-radius: 100%;
+        color: black;
+    }
+
+    nav ul {
+        display: flex;
+        gap: 32px;
+    }
+
+    @media (max-width: 40rem) {
+        .nav-content {
+            padding: 24px clamp(8px, 4vw, 24px);
+        }
+
+        nav ul {
+            gap: clamp(8px, 4vw, 32px);
+        }
+    }
+</style>

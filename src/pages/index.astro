@@ -1,0 +1,20 @@
+---
+import Contact from "../components/Contact.astro";
+import Hero from "../components/Hero.astro";
+import Projects from "../components/Projects.astro";
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
+import Marquee from "../components/Marquee.astro";
+import StructuredData from "../components/StructuredData.astro";
+
+const description = "An archive of my Cloud and DevOps projects and technical articles, documenting hands-on work with infrastructure, automation, and application delivery.";
+---
+
+<Layout description={description}>
+	<StructuredData type="website" slot="head" />
+	<Hero />
+	<Marquee />
+	<Projects />
+	<Contact />
+	<Footer />
+</Layout>

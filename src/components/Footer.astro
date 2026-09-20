@@ -1,0 +1,78 @@
+<div id="container">
+    <div id="inner_container" class="animate">
+        <a href="mailto:rayane.kadi10@gmail.com" class="email-link">rayane.kadi10@gmail.com</a>
+        <a href="https://chuffed.org/palestine" target="_blank" class="palestine-link" style="animation: flag-pulse 2s ease-in-out infinite;">
+            Free Palestine
+            <img src="/palestine.png" alt="Palestine" class="palestine-flag" />
+        </a>
+        <div class="socials_links">
+            <a target="_blank" href="https://github.com/eenayar">GitHub</a>
+            <a href="/blog/">Blog</a>
+        </div>
+    </div>
+</div>
+
+<style is:global>
+    @keyframes flag-pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+    }
+</style>
+
+<style>
+    #container {
+        background-color: hsl(0 0% 9% / 1);
+        display: flex;
+        justify-content: center;
+        height: fit-content;
+    }
+
+    #inner_container {
+        max-width: 1400px;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        padding: 24px 50px;
+        border-right: 1px solid hsl(0 0% 15% / 1);
+        border-left: 1px solid hsl(0 0% 15% / 1);
+        font-size: var(--step--1);
+    }
+
+    .palestine-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .palestine-flag {
+        width: 14px;
+        height: auto;
+    }
+
+    .socials_links {
+        display: flex;
+        gap: 32px;
+        justify-self: end;
+    }
+
+    @media (max-width: 32.125rem) {
+        #inner_container {
+            grid-template-columns: 1fr;
+            justify-items: center;
+            gap: 12px;
+        }
+
+        .palestine-link {
+            order: -1;
+        }
+
+        .socials_links {
+            justify-self: center;
+        }
+    }
+</style>

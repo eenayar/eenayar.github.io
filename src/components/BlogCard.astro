@@ -1,0 +1,113 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  title: string;
+  description: string;
+  tags?: string[];
+  slug: string;
+  coverImage?: ImageMetadata;
+}
+
+const { title, description, tags, slug, coverImage } = Astro.props;
+---
+
+<a href={`/blog/${slug}/`} class="card">
+  {coverImage && (
+    <div class="cover-image">
+      <Image
+        src={coverImage}
+        alt={title}
+        width={600}
+        height={400}
+        quality={100}
+        format="webp"
+      />
+    </div>
+  )}
+  <div class="content">
+    <h4>{title}</h4>
+    <p class="description">{description}</p>
+    {tags && tags.length > 0 && (
+      <div class="tags">
+        {tags.map(tag => <span class="tag">{tag}</span>)}
+      </div>
+    )}
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    gap: 0;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    min-height: 180px;
+  }
+
+  .cover-image {
+    flex-shrink: 0;
+    width: 280px;
+    overflow: hidden;
+    align-self: stretch;
+  }
+
+  .cover-image :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    padding: 16px 50px 16px 24px;
+    justify-content: center;
+  }
+
+  .card h4 {
+    font-size: var(--step-1);
+    color: var(--color-title);
+    font-weight: 400;
+  }
+
+  .description {
+    font-size: var(--step-0);
+    color: var(--color-content);
+    max-width: 75ch;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-size: var(--step--2);
+    color: hsl(0 0% 70% / 1);
+    padding: 4px 8px;
+    border: 1px solid hsl(0 0% 15% / 1);
+    background: hsl(0 0% 6% / 1);
+  }
+
+  @media (max-width: 48rem) {
+    .card {
+      flex-direction: column;
+      min-height: auto;
+    }
+
+    .cover-image {
+      width: 100%;
+      height: 200px;
+    }
+
+    .content {
+      padding: 16px clamp(8px, 4vw, 24px);
+    }
+  }
+</style>

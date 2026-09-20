@@ -1,0 +1,32 @@
+<section id="contact">
+    <div id="inner_section">
+        <div class="content animate">
+            <h2>Contact</h2>
+            <p>For questions about my work, you can reach me by email.</p>
+            <a href="mailto:rayane.kadi10@gmail.com">rayane.kadi10@gmail.com</a>
+        </div>
+    </div>
+</section>
+
+<style>
+    section {
+        background-color: var(--bg-third-section);
+        background: var(--gradient-third-section);
+        margin-bottom: clamp(24px, 4vw, 48px);
+    }
+    #inner_section {
+        padding: 80px 24px;
+    }
+    .content {
+        display: grid;
+        justify-items: center;
+        gap: 12px;
+        text-align: center;
+    }
+    h2 { font-size: var(--step-3); }
+    p { font-size: var(--step-0); }
+    a { font-size: var(--step-0); overflow-wrap: anywhere; }
+    @media (max-width: 48rem) {
+        #inner_section { padding: 50px 16px; }
+    }
+</style>

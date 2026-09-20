@@ -1,0 +1,383 @@
+---
+import Layout from "./Layout.astro";
+import NavBar from "../components/NavBar.astro";
+import Footer from "../components/Footer.astro";
+import StructuredData from "../components/StructuredData.astro";
+import { getCollection } from "astro:content";
+
+interface Props {
+  title: string;
+  description?: string;
+  publishedAt: Date;
+  author?: string;
+  tags?: string[];
+  coverImage?: any;
+}
+
+const {
+  title,
+  description,
+  publishedAt,
+  author = "Rayane Kadi",
+  tags,
+  coverImage,
+} = Astro.props;
+
+const formattedDate = publishedAt.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+// Convert coverImage to URL string
+const imageUrl = coverImage?.src || undefined;
+
+// Get all blog posts for navigation
+const allPosts = await getCollection("blog");
+const posts = allPosts
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+// Find current post index
+const currentIndex = posts.findIndex((post) => post.data.title === title);
+
+// Get previous and next posts
+const newerPost = currentIndex > 0 ? posts[currentIndex - 1] : null;
+const olderPost = currentIndex < posts.length - 1 ? posts[currentIndex + 1] : null;
+---
+
+<Layout
+  title={`${title} | Rayane Kadi`}
+  description={description}
+  type="article"
+  publishedAt={publishedAt}
+  tags={tags}
+  image={imageUrl}
+>
+  <StructuredData
+    type="article"
+    title={title}
+    description={description}
+    publishedAt={publishedAt}
+    tags={tags}
+    image={imageUrl}
+    slot="head"
+  />
+  <div class="progress-bar" id="progress-bar"></div>
+  <NavBar />
+
+  <section id="article-content">
+    <div id="inner_section">
+      <div class="article-header">
+        <h1 class="animate">{title}</h1>
+        <div class="metadata animate">
+          <time datetime={publishedAt.toISOString()}>{formattedDate}</time>
+          <span class="separator">·</span>
+          <span>{author}</span>
+        </div>
+        {
+          tags && tags.length > 0 && (
+            <div class="tags animate">
+              {tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          )
+        }
+      </div>
+
+      <article class="animate">
+        <slot />
+      </article>
+
+      <nav class="article-navigation animate">
+        <h2 class="nav-heading">More articles</h2>
+        <div class="nav-links">
+          {newerPost && (
+            <a href={`/blog/${newerPost.id.replace('/index', '')}/`} class="nav-link">
+              <span class="nav-label">Next article:</span>
+              <span class="nav-title">{newerPost.data.title}</span>
+            </a>
+          )}
+
+          {olderPost && (
+            <a href={`/blog/${olderPost.id.replace('/index', '')}/`} class="nav-link">
+              <span class="nav-label">Previous article:</span>
+              <span class="nav-title">{olderPost.data.title}</span>
+            </a>
+          )}
+        </div>
+      </nav>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--color-link, #8153cb);
+    z-index: 9999;
+    transition: width 0.1s linear;
+  }
+
+  #article-content {
+    background: var(--gradient-article);
+  }
+
+  #article-content #inner_section {
+    display: flex;
+    flex-direction: column;
+    padding: 80px 0px;
+  }
+
+  .article-header {
+    display: grid;
+    gap: 16px;
+    padding: 0px 50px;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .article-header h1 {
+    font-size: var(--step-3);
+    color: var(--color-title);
+  }
+
+  .metadata {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--step--1);
+    color: hsl(0 0% 60% / 1);
+  }
+
+  .separator {
+    color: hsl(0 0% 40% / 1);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-size: var(--step--1);
+    color: hsl(0 0% 70% / 1);
+    padding: 4px 8px;
+    border: 1px solid hsl(0 0% 15% / 1);
+    background: hsl(0 0% 6% / 1);
+  }
+
+  article {
+    padding: 0px 50px;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* Markdown content styles */
+  article :global(h2) {
+    font-size: var(--step-2);
+    color: var(--color-title);
+    margin-top: 32px;
+    margin-bottom: 12px;
+  }
+
+  article :global(h3) {
+    font-size: var(--step-1);
+    color: var(--color-title);
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+
+  article :global(h4) {
+    font-size: var(--step-1);
+    color: var(--color-title);
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+
+  article :global(p) {
+    font-size: var(--step-0);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  article :global(ul) {
+    margin-bottom: 16px;
+    padding-left: 28px;
+    list-style-type: disc !important;
+    list-style-position: outside !important;
+  }
+
+  article :global(ol) {
+    margin-bottom: 16px;
+    padding-left: 28px;
+    list-style-type: decimal !important;
+    list-style-position: outside !important;
+  }
+
+  article :global(li) {
+    margin-bottom: 8px;
+    margin-left: 8px;
+    color: var(--color-content);
+    line-height: 1.6;
+    display: list-item !important;
+    list-style: inherit !important;
+  }
+
+  article :global(code) {
+    background: hsl(0 0% 10% / 1);
+    padding: 2px 6px;
+    font-size: 0.9em;
+    border: 1px solid hsl(0 0% 15% / 1);
+  }
+
+  article :global(pre) {
+    background: hsl(0 0% 6% / 1);
+    border: 1px solid hsl(0 0% 15% / 1);
+    padding: 16px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+  }
+
+  article :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  article :global(blockquote) {
+    border-left: 3px solid #8153cb;
+    padding-left: 16px;
+    margin: 16px 0;
+    font-style: italic;
+    color: hsl(0 0% 70% / 1);
+  }
+
+  article :global(a) {
+    color: var(--color-link);
+    transition: 0.2s ease-out;
+    text-decoration: underline;
+  }
+
+  article :global(a:hover) {
+    color: var(--color-link-hover);
+    text-shadow: 0px 0px 5px #8153cb;
+    text-decoration: underline;
+  }
+
+  article :global(figure) {
+    margin: 24px 0;
+    text-align: center;
+  }
+
+  article :global(img) {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid hsl(0 0% 15% / 1);
+    margin: 24px auto;
+    display: block;
+  }
+
+  /* Réduire l'espace entre image et figcaption */
+  article :global(p:has(img)):has(+ figcaption) {
+    margin-bottom: 0;
+  }
+
+  article :global(p:has(img) + figcaption) {
+    margin-top: -16px;
+  }
+
+  article :global(figure img) {
+    margin: 0 auto 12px;
+  }
+
+  article :global(figcaption) {
+    font-size: var(--step--1);
+    color: hsl(0 0% 60% / 1);
+    font-style: italic;
+    text-align: center;
+    padding: 8px 16px;
+    margin-bottom: 24px;
+  }
+
+  article :global(hr) {
+    border: none;
+    border-top: 1px solid hsl(0 0% 15% / 1);
+    margin: 32px 0;
+  }
+
+  .article-navigation {
+    padding: 40px 50px;
+    max-width: 800px;
+    width: 100%;
+    margin: auto;
+  }
+
+  .nav-heading {
+    font-size: var(--step-1);
+    color: var(--color-title);
+    margin-bottom: 16px;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    text-decoration: none;
+    font-size: var(--step-0);
+    line-height: 1.6;
+    transition: 0.2s ease-out;
+  }
+
+  .nav-label {
+    color: hsl(0 0% 60% / 1);
+  }
+
+  .nav-title {
+    color: var(--color-link);
+  }
+
+  .nav-link:hover .nav-title {
+    color: var(--color-link-hover);
+    text-shadow: 0px 0px 5px #8153cb;
+  }
+
+  @media (max-width: 48rem) {
+    .article-header {
+      padding: 0px clamp(8px, 4vw, 24px);
+    }
+
+    article {
+      padding: 0px clamp(8px, 4vw, 24px);
+    }
+
+    .article-navigation {
+      padding: 40px clamp(8px, 4vw, 24px);
+    }
+  }
+</style>
+
+<script is:inline>
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (scrollTop / docHeight) * 100 + '%';
+  });
+</script>

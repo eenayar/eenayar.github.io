@@ -1,0 +1,56 @@
+---
+import NavBar from "./NavBar.astro";
+---
+
+<section>
+	<div id="inner_section">
+		<NavBar />
+		<div class="text animate">
+			<h1>Blog</h1>
+			<p>An archive of projects, experiments, and lessons learned.</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	section {
+		background-color: var(--bg-second-section);
+		background: var(--gradient-second-section);
+	}
+
+	#inner_section {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 32px;
+		padding: 100px 0px 0px 0px;
+		min-height: 250px;
+	}
+
+	.text {
+		display: grid;
+		gap: 8px;
+		padding-left: 50px;
+		text-align: left;
+	}
+
+	.text h1 {
+		font-size: var(--step-4);
+		color: var(--color-title);
+	}
+
+	.text p {
+		font-size: var(--step-0);
+		max-width: 62ch;
+	}
+
+	@media (max-width: 48rem) {
+		#inner_section {
+			padding: 50px 0px 50px 0px;
+		}
+		.text {
+			text-align: center;
+			padding: 0px clamp(8px, 4vw, 24px);
+		}
+	}
+</style>
